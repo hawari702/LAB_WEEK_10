@@ -18,22 +18,19 @@ class MainActivity : AppCompatActivity() {
         // Inisialisasi ViewModel
         viewModel = ViewModelProvider(this)[TotalViewModel::class.java]
 
-        // Tampilkan nilai awal
-        updateText(viewModel.total)
+        // Observe LiveData → update UI setiap total berubah
+        viewModel.total.observe(this) { total ->
+            updateText(total)
+        }
 
-        // Setup button
-        prepareViewModel()
+        // Tombol increment
+        findViewById<Button>(R.id.button_increment).setOnClickListener {
+            viewModel.incrementTotal()
+        }
     }
 
     private fun updateText(total: Int) {
         findViewById<TextView>(R.id.text_total).text =
             getString(R.string.text_total, total)
-    }
-
-    private fun prepareViewModel() {
-        findViewById<Button>(R.id.button_increment).setOnClickListener {
-            val newTotal = viewModel.incrementTotal()
-            updateText(newTotal)
-        }
     }
 }
